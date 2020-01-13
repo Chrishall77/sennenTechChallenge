@@ -44,8 +44,8 @@
     //loop 100 times populating locations with a new instance of Location
     function generateLocations() {
         for ( let i = 0; i < 100 ; i ++ ) {
-            let newLat = generateLat();
-            let newLong = generateLong();
+            let newLat = generateCoord(90);
+            let newLong = generateCoord(180);
             let newLocation = new Location(
                 newLat,
                 newLong,
@@ -54,21 +54,11 @@
         }
     }
 
-    //function that generates random longitude to 3 fixed decimal places
-    function generateLong() {
-        let num = (Math.random()*180).toFixed(3);
-        let posorneg = Math.floor(Math.random());
-        if (posorneg == 0) {
-            num = num * -1;
-        }
-        return num;
-    }
-  
-    //function that generates random latitude to 3 fixed decimal places
-    function generateLat() {
-        let num = (Math.random()*90).toFixed(3);
-        let posorneg = Math.floor(Math.random());
-        if (posorneg == 0) {
+    //function that generates random latitude/longitude to 3 fixed decimal places
+    function generateCoord(limit) {
+        let num = ( Math.random() * limit ).toFixed(3);
+        let posorneg = Math.floor( Math.random() );
+        if ( posorneg == 0 ) {
             num = num * -1;
         }
         return num;
