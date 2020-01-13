@@ -1,10 +1,14 @@
-// global will refer to global for Node.js and window for browsers
+// prototype IIFE for NodeJS
 ;(function (global) { // ; in case the file is concatenated with a non ; line ending
     'use strict'
   
+    //import axios
     const axios = require('axios');
+
+    //initialise locations array
     let locations = [];
 
+    //create Location constructor
     class Location {
         constructor(lat, long) {
             this.lat = lat;
@@ -20,7 +24,7 @@
         }
     }
 
-
+    //axios GET request
     axios.get('https://api.sunrise-sunset.org/json?lat=36.232&lng=-4.420')
         .then(response => {
             let sunrise = response.data.results.sunrise;
@@ -33,9 +37,11 @@
         console.log(error);
     });
 
+    //call and simply 100 random locations
     generateLocations();
     console.log(locations);
 
+    //loop 100 times populating locations with a new instance of Location
     function generateLocations() {
         for ( let i = 0; i < 100 ; i ++ ) {
             let newLat = generateLat();
@@ -48,19 +54,20 @@
         }
     }
 
-    
+    //function that generates random longitude to 3 fixed decimal places
     function generateLong() {
-        var num = (Math.random()*180).toFixed(3);
-        var posorneg = Math.floor(Math.random());
+        let num = (Math.random()*180).toFixed(3);
+        let posorneg = Math.floor(Math.random());
         if (posorneg == 0) {
             num = num * -1;
         }
         return num;
     }
   
+    //function that generates random latitude to 3 fixed decimal places
     function generateLat() {
-        var num = (Math.random()*90).toFixed(3);
-        var posorneg = Math.floor(Math.random());
+        let num = (Math.random()*90).toFixed(3);
+        let posorneg = Math.floor(Math.random());
         if (posorneg == 0) {
             num = num * -1;
         }
