@@ -7,6 +7,8 @@
 
     //initialise locations array
     let locations = [];
+    let sunRise = [];
+    let sunSet = [];
 
     //create Location constructor
     class Location {
@@ -25,25 +27,44 @@
     }
 
     //axios GET request
-    axios.get('https://api.sunrise-sunset.org/json?lat=36.232&lng=-4.420')
+    function getSunTimes(lat, long, i) {
+        axios.get('https://api.sunrise-sunset.org/json?', {
+        params: {
+            lat: lat,
+            lng: long
+          }
+        })
         .then(response => {
             let sunrise = response.data.results.sunrise;
             let sunset = response.data.results.sunset;
             console.log(sunrise);
             console.log(sunset);
 
-    })
-    .catch(error => {
-        console.log(error);
-    });
+         })
+        .catch(error => {
+            console.log(error.message);
+        });
+    };
+    
 
-    //call and simply 100 random locations
+    //call and display 100 random locations
     generateLocations();
-    console.log(locations);
+    
+    //console.log(locations);
+    for ( let i = 0; i < locations.length; i++ ) {
+        let getLat = locations[i].getLat();
+        let getLong = locations[i].getLong();
+        console.log("getLat: " + getLat + " getlong: " + getLong)
+        getSunTimes(getLat, getLong, i);
+    }
+
+    //console.log(Math.min(...sunRise));
+
+ 
 
     //loop 100 times populating locations with a new instance of Location
     function generateLocations() {
-        for ( let i = 0; i < 100 ; i ++ ) {
+        for ( let i = 0; i < 3 ; i ++ ) {
             let newLat = generateCoord(90);
             let newLong = generateCoord(180);
             let newLocation = new Location(
@@ -52,15 +73,18 @@
             );
             locations.push(newLocation);
         }
-    }
+    };
 
-    //function that generates random latitude/longitude to 3 fixed decimal places
+    
+
+    //function that generates random latitude/longitude to 5 fixed decimal places
     function generateCoord(limit) {
         let num = ( Math.random() * limit ).toFixed(3);
         let posorneg = Math.floor( Math.random() );
         if ( posorneg == 0 ) {
             num = num * -1;
         }
+        console.log(num);
         return num;
     }
 
