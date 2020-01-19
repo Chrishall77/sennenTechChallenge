@@ -10,7 +10,7 @@
 
     function fetchData() {
         const allRequests = urls.map(url =>
-            axios(url).then(response => console.log("Sunrise: " + response.data.results.sunrise + " Sunset: " + response.data.results.sunset))
+            axios(url).then(response => console.log(url + " returns sunrise: " + response.data.results.sunrise + " and sunset: " + response.data.results.sunset))
         );
 
         return Promise.all(allRequests);
