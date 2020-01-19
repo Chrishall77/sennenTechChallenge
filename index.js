@@ -6,80 +6,34 @@
     const axios = require('axios');
 
     //initialise locations array
-    let locations = [];
-    let sunRise = [];
-    let sunSet = [];
+    let urls = [];
 
-    //create Location constructor
-    class Location {
-        constructor(lat, long) {
-            this.lat = lat;
-            this.long = long;
-        }
+    function fetchData() {
+        const allRequests = urls.map(url =>
+            axios(url).then(response => console.log("Sunrise: " + response.data.results.sunrise + " Sunset: " + response.data.results.sunset))
+        );
 
-        getLat() {
-            return this.lat;
-        }
-
-        getLong() {
-            return this.long;
-        }
-    }
-
-    //axios GET request
-    function getSunTimes(lat, long, i) {
-        axios.get('https://api.sunrise-sunset.org/json?', {
-        params: {
-            lat: lat,
-            lng: long
-          }
-        })
-        .then(response => {
-            let sunrise = response.data.results.sunrise;
-            let sunset = response.data.results.sunset;
-            console.log(sunrise);
-            console.log(sunset);
-
-         })
-        .catch(error => {
-            console.log(error.message);
-        });
+        return Promise.all(allRequests);
     };
     
-
-    //call and display 100 random locations
+     //call and display 5 random locations
     generateLocations();
-    
-    //console.log(locations);
-    for ( let i = 0; i < locations.length; i++ ) {
-        let getLat = locations[i].getLat();
-        let getLong = locations[i].getLong();
-        console.log("getLat: " + getLat + " getlong: " + getLong)
-        getSunTimes(getLat, getLong, i);
-    }
+    fetchData().then(arrayOfResponses =>
+        console.log("We got: ", arrayOfResponses.length)
+    );
 
-    //console.log(Math.min(...sunRise));
-
- 
-
-    //loop 100 times populating locations with a new instance of Location
+    //loop 5 times populating urls with a new url
     function generateLocations() {
-        for ( let i = 0; i < 3 ; i ++ ) {
+        for ( let i = 0; i < 5 ; i ++ ) {
             let newLat = generateCoord(90);
             let newLong = generateCoord(180);
-            let newLocation = new Location(
-                newLat,
-                newLong,
-            );
-            locations.push(newLocation);
+            urls.push("https://api.sunrise-sunset.org/json?lat=" + newLat + "&lng=" + newLong)
         }
     };
 
-    
-
-    //function that generates random latitude/longitude to 5 fixed decimal places
+    //function that generates random latitude/longitude to 7 fixed decimal places
     function generateCoord(limit) {
-        let num = ( Math.random() * limit ).toFixed(3);
+        let num = ( Math.random() * limit ).toFixed(7);
         let posorneg = Math.floor( Math.random() );
         if ( posorneg == 0 ) {
             num = num * -1;
