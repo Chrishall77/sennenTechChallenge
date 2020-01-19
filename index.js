@@ -2,15 +2,17 @@
 ;(function (global) { // ; in case the file is concatenated with a non ; line ending
     'use strict'
   
-    //import axios
-    const axios = require('axios');
+    //import fetch
+    const fetch = require('node-fetch');
 
     //initialise locations array
     let urls = [];
+    let daylightTimes = [];
 
     function fetchData() {
         const allRequests = urls.map(url =>
-            axios(url).then(response => console.log(url + " returns sunrise: " + response.data.results.sunrise + " and sunset: " + response.data.results.sunset))
+            fetch(url)
+            .then(response => response.json())
         );
 
         return Promise.all(allRequests);
@@ -18,9 +20,25 @@
     
      //call and display 5 random locations
     generateLocations();
-    fetchData().then(arrayOfResponses =>
-        console.log("We got: ", arrayOfResponses.length)
+
+    fetchData().then(arrayOfResponses => {
+        console.log("We got: ", arrayOfResponses);
+        let batchTimes = arrayOfResponses.map(x =>({sunrise: x.results.sunrise, sunset: x.results.sunset, day_length: x.results.day_length}));
+        let minTime = findMin(batchTimes);
+        let result = batchTimes.filter(x => x.sunrise == minTime );
+        console.log(result);
+        console.log(result[0].day_length);
+    }
+       
     );
+
+    //findMin(daylightTimes);
+
+    function findMin(array) {
+        return array.reduce((min, val) => val.sunrise < min ? val.sunrise : min, array[0].sunrise);
+    }
+   
+    
 
     //loop 5 times populating urls with a new url
     function generateLocations() {
