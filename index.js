@@ -5,10 +5,11 @@
     //import fetch
     const fetch = require('node-fetch');
 
-    //initialise locations array
+    //initialise urls and daylightTimes arrays
     let urls = [];
     let daylightTimes = [];
 
+    //use urls to fetch sunrise and sunset times
     function fetchData() {
         const allRequests = urls.map(url =>
             fetch(url)
@@ -21,25 +22,22 @@
      //call and display 5 random locations
     generateLocations();
 
+    //call data from api
+    //map sunrise, sunset and day length to new array
+    //filter to return day length
     fetchData().then(arrayOfResponses => {
-        console.log("We got: ", arrayOfResponses);
         let batchTimes = arrayOfResponses.map(x =>({sunrise: x.results.sunrise, sunset: x.results.sunset, day_length: x.results.day_length}));
         let minTime = findMin(batchTimes);
         let result = batchTimes.filter(x => x.sunrise == minTime );
-        console.log(result);
-        console.log(result[0].day_length);
-    }
-       
+        console.log("Hours of daylight: " + result[0].day_length);
+        } 
     );
 
     //findMin(daylightTimes);
-
     function findMin(array) {
         return array.reduce((min, val) => val.sunrise < min ? val.sunrise : min, array[0].sunrise);
     }
    
-    
-
     //loop 5 times populating urls with a new url
     function generateLocations() {
         for ( let i = 0; i < 5 ; i ++ ) {
@@ -56,7 +54,6 @@
         if ( posorneg == 0 ) {
             num = num * -1;
         }
-        console.log(num);
         return num;
     }
 
